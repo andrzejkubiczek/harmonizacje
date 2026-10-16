@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#f4f2ed">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <title>Harmonizacje pieśni</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="viewer">
+  <div class="app">
+    <aside class="drawer" id="drawer" aria-label="Spis pieśni">
+      <div class="drawer-head">
+        <h2 class="brand">Harmonizacje</h2>
+        <button class="icon-btn only-compact" id="btnCloseMenu" aria-label="Zamknij menu">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <div class="search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        <input id="search" type="search" placeholder="Szukaj: tytuł, autor, numer" autocomplete="off">
+      </div>
+      <nav class="tree" id="tree"></nav>
+      <div class="offline" id="offline" hidden>
+        <div class="offline-row">
+          <span class="offline-text" id="offlineText"></span>
+          <button class="offline-btn" id="offlineBtn" type="button">Pobierz</button>
+        </div>
+        <div class="offline-bar"><i id="offlineFill"></i></div>
+      </div>
+      <a class="admin-link" id="adminLink" href="admin.html" hidden>Zarządzaj pieśniami</a>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+
+    <main class="main">
+      <header class="bar" id="bar">
+        <button class="icon-btn" id="btnMenu" aria-label="Menu">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <div class="crumb" id="crumb"></div>
+
+        <div class="group" id="keyGroup" aria-label="Tonacja" hidden>
+          <button class="icon-btn" id="keyDown" aria-label="Tonacja niżej">
+            <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="readout">
+            <span class="readout-main" id="keyName"></span>
+            <span class="readout-sub" id="keySub"></span>
+          </div>
+          <button class="icon-btn" id="keyUp" aria-label="Tonacja wyżej">
+            <svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg>
+          </button>
+        </div>
+
+        <div class="group" id="verseGroup" aria-label="Zwrotki" hidden>
+          <button class="icon-btn" id="versePrev" aria-label="Poprzednie zwrotki">
+            <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <div class="readout">
+            <span class="readout-main" id="verseName"></span>
+            <span class="readout-sub">zwrotki</span>
+          </div>
+          <button class="icon-btn" id="verseNext" aria-label="Następne zwrotki">
+            <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+
+        <button class="icon-btn" id="btnFind" aria-label="Szukaj pieśni" title="Szukaj pieśni (/)">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        </button>
+        <button class="icon-btn" id="btnLayout" aria-label="Układ strony" title="Układ: kartka A4 / dopasuj do ekranu">
+          <svg viewBox="0 0 24 24"><rect x="7" y="3.5" width="10" height="17" rx="1.5"/></svg>
+        </button>
+        <button class="icon-btn" id="btnFull" aria-label="Pełny ekran">
+          <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+        </button>
+      </header>
+
+      <section class="stage" id="stage">
+        <div class="sheet-wrap" id="wrap" hidden>
+          <article class="sheet" id="sheet">
+            <h1 id="title"></h1>
+            <p class="authors" id="authors"></p>
+            <div class="score" id="score"></div>
+            <div class="verses" id="verses"></div>
+          </article>
+        </div>
+        <div class="empty" id="empty">
+          <p class="empty-title">Wybierz pieśń</p>
+          <p>Otwórz menu i wskaż harmonizację z listy.</p>
+        </div>
+        <div class="loading" id="loading" hidden>Ładowanie…</div>
+      </section>
+    </main>
+  </div>
+
+  <div class="finder" id="finder" hidden>
+    <div class="finder-card" role="dialog" aria-label="Szukaj pieśni">
+      <div class="search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        <input id="finderInput" type="search" inputmode="search" enterkeyhint="go" placeholder="Numer lub tytuł…" autocomplete="off">
+      </div>
+      <div class="finder-results" id="finderResults"></div>
+    </div>
+  </div>
+
+  <script src="vendor/verovio-toolkit-wasm.js"></script>
+  <script>window.verovioReady = new Promise((resolve) => { verovio.module.onRuntimeInitialized = resolve; });</script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+{
+  "folders": [
+    {
+      "id": "adwent",
+      "name": "Adwent",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "boze-narodzenie",
+      "name": "Boże Narodzenie",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "dialogi-i-aklamacje-mszalne",
+      "name": "Dialogi i aklamacje mszalne",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "dodatek",
+      "name": "Dodatek",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "inne",
+      "name": "Inne",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "kult-swietych-panskich",
+      "name": "Kult Świętych Pańskich",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "om",
+      "name": "OM",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "piesni-do-nspj",
+      "name": "Pieśni do NSPJ",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "piesni-ku-czci-najswietszej-eucharystii",
+      "name": "Pieśni ku czci Najświętszej Eucharystii",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "piesni-mszalne",
+      "name": "Pieśni mszalne",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "piesni-o-nmp",
+      "name": "Pieśni o NMP",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "piesni-podczas-pokropienia-niedzielnego",
+      "name": "Pieśni podczas pokropienia niedzielnego",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "piesni-poranne-i-wieczorne",
+      "name": "Pieśni poranne i wieczorne",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "piesni-wielkanocne",
+      "name": "Pieśni wielkanocne",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "piesni-za-zmarlych",
+      "name": "Pieśni za zmarłych",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "spiewy-na-zakonczenie",
+      "name": "Śpiewy na zakończenie",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "spiewy-okolicznosciowe",
+      "name": "Śpiewy okolicznościowe",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "spiewy-procesyjne-na-komunie-sw",
+      "name": "Śpiewy procesyjne na Komunię św.",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "spiewy-procesyjne-na-wejscie-i-przygotow",
+      "name": "Śpiewy procesyjne na wejście i przygotowanie darów",
+      "folders": [],
+      "songs": [
+        {
+          "id": "boze-w-dobroci-79d974",
+          "title": "Boże w dobroci",
+          "author": "t.: XVIII w.; m.: (Miod.); h.: A. Kubiczek",
+          "ddn": "202",
+          "stanzas": [
+            "Choćbyś za grzechy nie karał mnie, Panie, * przecież skruszony żałowałbym za nie, * a żałowałbym, a żałowałbym dla tego samego, * żem Cię obraził, żem Cię obraził, Pana tak dobrego.",
+            "Więc, o mój Boże, i teraz żałuję, * dlatego, że Cię nad wszystko miłuję, * i to u siebie, i to u siebie statecznie stanowię, * że grzechów swoich, że grzechów swoich nigdy nie ponowię."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "spiewy-uwielbienia",
+      "name": "Śpiewy uwielbienia",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "swieta-panskie-w-okresie-zwyklym",
+      "name": "Święta Pańskie w okresie zwykłym",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "uswiecenie-dnia",
+      "name": "Uświęcenie dnia",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "wielki-post-spiewy-pasyjne",
+      "name": "Wielki Post - śpiewy pasyjne",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "wielki-post-spiewy-pokutne",
+      "name": "Wielki Post - śpiewy pokutne",
+      "folders": [],
+      "songs": []
+    },
+    {
+      "id": "wielki-tydzien",
+      "name": "Wielki Tydzień",
+      "folders": [],
+      "songs": []
+    }
+  ]
+}
