@@ -1,5 +1,4 @@
 /* Otwieranie pieśni i routing (#song=<id>). */
-import { MAX_SHIFT } from './constants.js';
 import { el } from './dom.js';
 import { state } from './state.js';
 import { findPath } from './catalog.js';
@@ -60,7 +59,7 @@ async function openSong(id, harmonyId, token) {
   state.xml = xml;
   state.key = readKey(doc);
   state.slotCount = Lyrics.getSlots(doc).length;
-  state.shift = Math.max(-MAX_SHIFT, Math.min(MAX_SHIFT, parseInt(localStorage.getItem(`shift:${id}`) || '0', 10) || 0));
+  state.shift = 0;
   state.page = 0;
   resetCaches();
 

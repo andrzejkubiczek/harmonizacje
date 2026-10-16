@@ -29,6 +29,11 @@ export function harmonizationCount(count) {
   return `${count} ${form}`;
 }
 
+// Zwrotki z panelu (od 1.) zastępują tekst z pliku; bez zwrotek zostaje tekst z pliku.
+export const ownLyrics = (song) => (song?.stanzas?.length || 0) > 0;
+export const firstStanzaNumber = (song) => (ownLyrics(song) ? 1 : 3);
+export const totalStanzas = (song) => (ownLyrics(song) ? 0 : 2) + (song?.stanzas?.length || 0);
+
 export function songSort(a, b) {
   const na = a.ddn ? parseInt(a.ddn, 10) : Infinity;
   const nb = b.ddn ? parseInt(b.ddn, 10) : Infinity;

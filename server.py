@@ -108,6 +108,7 @@ def clean_song_fields(body):
         "author": clean_text(body.get("author"), 300),
         "ddn": ddn,
         "stanzas": stanzas,
+        "ownLyrics": bool(body.get("ownLyrics")) and bool(stanzas),
     }
 
 
@@ -187,6 +188,7 @@ def handle_api(method, parts, body):
                 "title": fields["title"],
                 "ddn": fields["ddn"],
                 "stanzas": fields["stanzas"],
+                "ownLyrics": fields["ownLyrics"],
                 "harmonizations": [{
                     "id": song_id,
                     "author": fields["author"],
@@ -234,6 +236,7 @@ def handle_api(method, parts, body):
                     "title": fields["title"],
                     "ddn": fields["ddn"],
                     "stanzas": fields["stanzas"],
+                    "ownLyrics": fields["ownLyrics"],
                 })
                 if body.get("addHarmony"):
                     write_song_file(harmony["id"], body["xml"])

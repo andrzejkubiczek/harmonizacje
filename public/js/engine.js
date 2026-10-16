@@ -1,6 +1,7 @@
 /* Silnik nut: przygotowanie MusicXML (zwrotki), układ w Verovio, dopasowanie skali do kartki, pamięć podręczna. */
 import { BASE_SPACING, COARSE, MAX_SCALE, MAX_SPACING, MIN_SCALE } from './constants.js';
 import { state } from './state.js';
+import { firstStanzaNumber, ownLyrics } from './catalog.js';
 import * as Lyrics from './lyrics.js';
 import * as Music from './music.js';
 
@@ -42,18 +43,25 @@ export function resetCaches() {
 
 // Zwrotki strony: które trafiają pod nuty (liczba sylab = liczba nut), a które jako zwykły tekst.
 export function stanzaPlan(page) {
-  if (page === 0) return [];
+  const own = ownLyrics(state.song);
+  if (page === 0 && !own) return [];
   const extras = state.song.stanzas;
+  const first = own ? page * 2 : (page - 1) * 2;
   const items = [];
-  for (let i = (page - 1) * 2; i < Math.min(extras.length, page * 2); i++) {
+  for (let i = first; i < Math.min(extras.length, first + 2); i++) {
     const tokens = Lyrics.parseStanza(extras[i]);
-    items.push({ number: i + 3, text: extras[i], tokens, fits: state.slotCount > 0 && tokens.length === state.slotCount });
+    items.push({
+      number: i + firstStanzaNumber(state.song),
+      text: extras[i],
+      tokens,
+      fits: state.slotCount > 0 && tokens.length === state.slotCount,
+    });
   }
   return items;
 }
 
 function buildSource(page) {
-  if (page === 0) return state.xml;
+  if (page === 0 && !ownLyrics(state.song)) return state.xml;
   const doc = new DOMParser().parseFromString(state.xml, 'application/xml');
   const slots = Lyrics.getSlots(doc);
   Lyrics.removeLyrics(doc);

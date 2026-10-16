@@ -281,6 +281,7 @@ import { harmonizationCount } from './catalog.js';
     el.author.value = '';
     el.ddn.value = '';
     el.stanzas.textContent = '';
+    renumberStanzas();
   }
 
   function newSong(folderId) {
@@ -380,7 +381,7 @@ import { harmonizationCount } from './catalog.js';
   }
 
   function renumberStanzas() {
-    [...el.stanzas.children].forEach((row, i) => { row.querySelector('.stanza-num').textContent = `${i + 3}.`; });
+    [...el.stanzas.children].forEach((row, i) => { row.querySelector('.stanza-num').textContent = `${i + 1}.`; });
   }
 
   function addStanza(text = '') {
@@ -467,6 +468,7 @@ import { harmonizationCount } from './catalog.js';
       author: el.author.value,
       ddn: el.ddn.value.replace(/\D/g, ''),
       stanzas: [...el.stanzas.querySelectorAll('textarea')].map((t) => t.value),
+      ownLyrics: true,
       xml: state.xml || undefined,
     };
     if (editing) {

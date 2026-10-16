@@ -2,6 +2,7 @@
 import { MAX_SHIFT } from './constants.js';
 import { $, el } from './dom.js';
 import { state } from './state.js';
+import { totalStanzas } from './catalog.js';
 import * as Music from './music.js';
 import { hooks, layoutMode, pageCount, render } from './sheet.js';
 import { openFinder } from './library.js';
@@ -12,11 +13,11 @@ export function updateControls() {
   el.verseGroup.hidden = !song || pageCount() < 2;
   if (!song) return;
   el.keyName.textContent = Music.keyLabel(state.key, state.shift);
-  el.keySub.textContent = state.shift === 0 ? 'wzorcowa' : `${state.shift > 0 ? '+' : '−'}${Math.abs(state.shift)} pół.`;
+  el.keySub.textContent = state.shift === 0 ? '' : `${state.shift > 0 ? '+' : '−'}${Math.abs(state.shift)} pół.`;
   el.keyUp.disabled = state.shift >= MAX_SHIFT;
   el.keyDown.disabled = state.shift <= -MAX_SHIFT;
 
-  const total = 2 + (song.stanzas?.length || 0);
+  const total = totalStanzas(song);
   const from = state.page * 2 + 1;
   const to = Math.min(from + 1, total);
   el.verseName.textContent = from === to ? `${from}` : `${from}–${to}`;
@@ -29,7 +30,6 @@ function setShift(value) {
   const next = Math.max(-MAX_SHIFT, Math.min(MAX_SHIFT, value));
   if (next === state.shift) return;
   state.shift = next;
-  localStorage.setItem(`shift:${state.song.id}`, String(next));
   render();
 }
 

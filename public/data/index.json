@@ -114,17 +114,25 @@
       "folders": [],
       "songs": [
         {
-          "id": "boze-w-dobroci-c42f96",
+          "id": "boze-w-dobroci-4811aa",
           "title": "Boże w dobroci",
           "ddn": "202",
           "stanzas": [
-            "1. Boże, w dobroci nigdy nie przebrany, * żadnym językiem nie wypowiedziany! * Ty jesteś godzien, Ty jesteś godzien wszelakiej miłości, * poszanowania, poszanowania, chwały, uczciwości."
+            "1. Boże, w dobroci nigdy nie przebrany, * żadnym językiem nie wypowiedziany! * Ty jesteś godzien, Ty jesteś godzien wszelakiej miłości, * poszanowania, poszanowania, chwały, uczciwości.",
+            "2. Ciebie czczę, pragnę i ważę samego * nad wszystkie dobra, Tyś u serca mego * najwyższe dobro, najwyższe dobro, Tyś w najwyższej cenie, * sam jeden u mnie, sam jeden u mnie nad wszy-stko stworzenie.",
+            "3. Choćbyś za grzechy nie karał mnie, Panie, * przecież skruszony żałowałbym za nie, * a żałowałbym, a żałowałbym dla tego samego, * żem Cię obraził, żem Cię obraził, Pana tak dobrego.",
+            "4. Więc, o mój Boże, i teraz żałuję, * dlatego, że Cię nad wszystko miłuję, * i to u siebie, i to u siebie statecznie stanowię, * że grzechów swoich, że grzechów swoich nigdy nie ponowię."
           ],
           "harmonizations": [
             {
-              "id": "boze-w-dobroci-c42f96",
+              "id": "boze-w-dobroci-4811aa",
               "author": "t.: XVIII w.; m.: (Miod.); h.: A. Kubiczek",
-              "rev": 1792164631
+              "rev": 1792165599
+            },
+            {
+              "id": "boze-w-dobroci-1f89e6",
+              "author": "t.: XVIII w.; m.: (Miod.); h.: M. Blechinger",
+              "rev": 1792165402
             }
           ]
         }

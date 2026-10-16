@@ -2,6 +2,7 @@
 import { MAX_SHIFT, PAD_BOTTOM, PAD_SIDE, PAD_TOP, SHEET_H, SHEET_W } from './constants.js';
 import { el } from './dom.js';
 import { state } from './state.js';
+import { totalStanzas } from './catalog.js';
 import { ready, scoreFor, stanzaPlan } from './engine.js';
 
 export const hooks = { rendered() {} };
@@ -20,7 +21,7 @@ function sheetHeight() {
 }
 
 export function pageCount() {
-  return 1 + Math.ceil((state.song?.stanzas?.length || 0) / 2);
+  return Math.max(1, Math.ceil(totalStanzas(state.song) / 2));
 }
 
 function renderVerses() {
