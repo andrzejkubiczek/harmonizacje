@@ -75,8 +75,8 @@ export async function render(animate = true) {
   const height = sheetHeight();
   el.sheet.style.minHeight = `${height}px`;
   el.title.textContent = state.song.title;
-  el.authors.textContent = state.song.author || '';
-  el.authors.hidden = !state.song.author;
+  el.authors.textContent = state.harmonization?.author || '';
+  el.authors.hidden = !state.harmonization?.author;
   renderVerses();
 
   const used = el.title.offsetHeight + (el.authors.hidden ? 0 : el.authors.offsetHeight) + el.verses.offsetHeight;

@@ -118,6 +118,17 @@ button { cursor: pointer; }
   display: flex; align-items: center; gap: 2px;
   padding: 2px; border: 1px solid var(--line); border-radius: 14px; background: #fff;
 }
+.harmony-select { min-width: 0; max-width: 250px; }
+.harmony-select select {
+  width: 100%; min-height: 44px; padding: 0 30px 0 12px;
+  border: 1px solid var(--line); border-radius: 12px; background: #fff;
+  font-size: 13px; outline: none; text-overflow: ellipsis;
+}
+.harmony-select select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
 .readout { min-width: 78px; text-align: center; line-height: 1.15; }
 .readout-main { display: block; font: 600 17px/1.15 var(--serif); }
 .readout-sub { display: block; font-size: 11px; color: var(--muted); letter-spacing: .02em; }
@@ -189,6 +200,7 @@ body.focus .bar.idle { opacity: 0; transform: translate(-50%, 16px); pointer-eve
 @media (max-width: 720px) {
   .crumb { display: none; }
   .bar { justify-content: space-between; }
+  .harmony-select { max-width: 140px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -3,8 +3,7 @@ import { $, el } from './dom.js';
 import { state } from './state.js';
 import * as Offline from './offline.js';
 import { renderTree } from './library.js';
-
-const plural = (n) => `${n} ${n === 1 ? 'pieśń' : 'pieśni'}`;
+import { harmonizationCount } from './catalog.js';
 
 export async function setupOffline() {
   if (!Offline.supported) return;
@@ -19,7 +18,7 @@ export async function setupOffline() {
     box.classList.remove('busy');
     const ready = cached === total;
     box.classList.toggle('ready', ready);
-    text.textContent = ready ? `Offline: gotowe (${plural(total)})` : `Offline: ${cached} z ${plural(total)}`;
+    text.textContent = ready ? `Offline: gotowe (${harmonizationCount(total)})` : `Offline: ${cached} z ${harmonizationCount(total)}`;
     btn.textContent = ready ? 'Aktualizuj' : 'Pobierz';
   };
 

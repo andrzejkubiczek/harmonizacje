@@ -47,6 +47,7 @@ body.admin { overflow: auto; background: linear-gradient(180deg, #f4f2ed 0, var(
 .a-song .song-num { min-width: 34px; padding: 1px 6px; border-radius: 6px; background: var(--panel); text-align: center; }
 .a-song.active .song-num { background: #fff; }
 .a-song .song-num:empty { visibility: hidden; }
+.harmony-count { font-size: 12px; font-weight: 400; color: var(--muted); }
 .a-empty { margin: 4px 10px 8px; font-size: 13px; color: var(--muted); }
 
 .mini { min-width: 34px; height: 34px; display: grid; place-items: center; padding: 0 8px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); font-size: 13px; transition: background .2s, color .2s; }
@@ -77,6 +78,7 @@ body.admin { overflow: auto; background: linear-gradient(180deg, #f4f2ed 0, var(
 .field { display: block; margin-bottom: 16px; min-width: 0; }
 .field > span { display: block; margin-bottom: 7px; font-size: 13px; font-weight: 500; color: #5b564d; }
 .field em { font-weight: 400; font-style: normal; color: var(--muted); }
+.harmony-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: -4px 0 16px; }
 .row { display: flex; gap: 14px; }
 .row .grow { flex: 1; }
 .row .num { width: 150px; flex: none; }
@@ -132,4 +134,3 @@ dialog input:focus { border-color: var(--accent); background: #fff; box-shadow: 
 .stanza-status.warn { color: #a5611a; }
 .stanza-status:empty, .stanza-preview:empty { display: none; }
 .stanza-preview { margin-top: 6px; padding: 8px 10px; border-radius: 10px; background: #fff; border: 1px solid var(--line); font: 15px/1.5 var(--serif); color: #4b463e; word-break: break-word; }
-

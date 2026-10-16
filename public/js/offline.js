@@ -1,11 +1,11 @@
 /* Tryb offline: rejestracja Service Workera i pobieranie wszystkich pieśni z góry. */
 const SONGS_CACHE = 'harmonizacje-songs';
-  const songUrl = (song) => `data/songs/${encodeURIComponent(song.id)}.musicxml?v=${song.rev || 0}`;
+  const songUrl = (harmonization) => `data/songs/${encodeURIComponent(harmonization.id)}.musicxml?v=${harmonization.rev || 0}`;
 
-  function listSongs(folders, out = []) {
+  function listHarmonizations(folders, out = []) {
     for (const f of folders) {
-      out.push(...f.songs);
-      listSongs(f.folders, out);
+      for (const song of f.songs) out.push(...(song.harmonizations || []));
+      listHarmonizations(f.folders, out);
     }
     return out;
   }
@@ -22,30 +22,30 @@ const SONGS_CACHE = 'harmonizacje-songs';
 
   async function status(index) {
     if (!supported) return { cached: 0, total: 0 };
-    const songs = listSongs(index.folders);
+    const harmonizations = listHarmonizations(index.folders);
     const cache = await caches.open(SONGS_CACHE);
     let cached = 0;
-    for (const s of songs) if (await cache.match(songUrl(s))) cached++;
-    return { cached, total: songs.length };
+    for (const h of harmonizations) if (await cache.match(songUrl(h))) cached++;
+    return { cached, total: harmonizations.length };
   }
 
   // Pobiera brakujące pieśni, usuwa nieaktualne wersje. onProgress(done, total).
   async function sync(index, onProgress = () => {}) {
-    const songs = listSongs(index.folders);
+    const harmonizations = listHarmonizations(index.folders);
     const cache = await caches.open(SONGS_CACHE);
-    const wanted = new Set(songs.map((s) => new URL(songUrl(s), location.href).href));
+    const wanted = new Set(harmonizations.map((h) => new URL(songUrl(h), location.href).href));
     for (const req of await cache.keys()) if (!wanted.has(req.url)) await cache.delete(req);
 
     const missing = [];
-    for (const s of songs) if (!(await cache.match(songUrl(s)))) missing.push(s);
+    for (const h of harmonizations) if (!(await cache.match(songUrl(h)))) missing.push(h);
     let done = 0;
     onProgress(done, missing.length);
     const queue = [...missing];
     const worker = async () => {
       while (queue.length) {
-        const s = queue.shift();
-        const res = await fetch(songUrl(s));
-        if (res.ok) await cache.put(songUrl(s), res);
+        const h = queue.shift();
+        const res = await fetch(songUrl(h));
+        if (res.ok) await cache.put(songUrl(h), res);
         onProgress(++done, missing.length);
       }
     };

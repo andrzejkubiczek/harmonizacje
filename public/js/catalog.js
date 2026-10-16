@@ -22,6 +22,13 @@ export function findPath(folders, songId, path = []) {
 
 export const countSongs = (folder) => folder.songs.length + folder.folders.reduce((n, f) => n + countSongs(f), 0);
 
+export function harmonizationCount(count) {
+  const form = count === 1 ? 'harmonizacja'
+    : count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14) ? 'harmonizacje'
+      : 'harmonizacji';
+  return `${count} ${form}`;
+}
+
 export function songSort(a, b) {
   const na = a.ddn ? parseInt(a.ddn, 10) : Infinity;
   const nb = b.ddn ? parseInt(b.ddn, 10) : Infinity;
@@ -33,10 +40,11 @@ export function findSongs(index, raw) {
   const q = fold(raw);
   if (!q) return [];
   const all = [...allSongs(index.folders)];
+  const authors = (song) => (song.harmonizations || []).map((h) => h.author || '').join(' ');
   if (/^\d+$/.test(q)) {
     return all.filter(({ song }) => (song.ddn || '').startsWith(q))
       .sort((a, b) => (b.song.ddn === q) - (a.song.ddn === q) || parseInt(a.song.ddn, 10) - parseInt(b.song.ddn, 10));
   }
-  return all.filter(({ song }) => fold(`${song.title} ${song.author || ''}`).includes(q))
+  return all.filter(({ song }) => fold(`${song.title} ${authors(song)}`).includes(q))
     .sort((a, b) => a.song.title.localeCompare(b.song.title, 'pl'));
 }

@@ -64,7 +64,7 @@ function buildSource(page) {
 
 // MusicXML -> MEI bez łączących kresek taktowych między pięcioliniami (nie przechodzą przez tekst).
 function getMei(page) {
-  const id = `${state.song.id}:${page}`;
+  const id = `${state.harmonization.id}:${page}`;
   if (!meiCache.has(id)) {
     tk.setOptions({ transpose: '' });
     tk.loadData(buildSource(page));
@@ -123,7 +123,7 @@ function fitMusic(mei, interval, availH, contentW) {
 
 // ctx: { page, height, availH, contentW }
 export function scoreFor(ctx, shift) {
-  const key = `${state.song.id}|${ctx.page}|${shift}|${ctx.height}|${ctx.availH}`;
+  const key = `${state.harmonization.id}|${ctx.page}|${shift}|${ctx.height}|${ctx.availH}`;
   if (!scoreCache.has(key)) {
     if (scoreCache.size > 60) scoreCache.delete(scoreCache.keys().next().value);
     const interval = Music.intervalFor(state.key, shift);

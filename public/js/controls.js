@@ -44,6 +44,9 @@ el.keyUp.addEventListener('click', () => setShift(state.shift + 1));
 el.keyDown.addEventListener('click', () => setShift(state.shift - 1));
 el.versePrev.addEventListener('click', () => setPage(state.page - 1));
 el.verseNext.addEventListener('click', () => setPage(state.page + 1));
+el.harmonySelect.addEventListener('change', () => {
+  if (state.song) location.hash = `song=${state.song.id}&harmony=${el.harmonySelect.value}`;
+});
 
 $('btnLayout').addEventListener('click', () => {
   state.layout = layoutMode() === 'a4' ? 'screen' : 'a4';

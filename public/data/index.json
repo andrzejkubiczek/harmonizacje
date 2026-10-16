@@ -114,13 +114,18 @@
       "folders": [],
       "songs": [
         {
-          "id": "boze-w-dobroci-79d974",
+          "id": "boze-w-dobroci-c42f96",
           "title": "Boże w dobroci",
-          "author": "t.: XVIII w.; m.: (Miod.); h.: A. Kubiczek",
           "ddn": "202",
           "stanzas": [
-            "Choćbyś za grzechy nie karał mnie, Panie, * przecież skruszony żałowałbym za nie, * a żałowałbym, a żałowałbym dla tego samego, * żem Cię obraził, żem Cię obraził, Pana tak dobrego.",
-            "Więc, o mój Boże, i teraz żałuję, * dlatego, że Cię nad wszystko miłuję, * i to u siebie, i to u siebie statecznie stanowię, * że grzechów swoich, że grzechów swoich nigdy nie ponowię."
+            "1. Boże, w dobroci nigdy nie przebrany, * żadnym językiem nie wypowiedziany! * Ty jesteś godzien, Ty jesteś godzien wszelakiej miłości, * poszanowania, poszanowania, chwały, uczciwości."
+          ],
+          "harmonizations": [
+            {
+              "id": "boze-w-dobroci-c42f96",
+              "author": "t.: XVIII w.; m.: (Miod.); h.: A. Kubiczek",
+              "rev": 1792164631
+            }
           ]
         }
       ]

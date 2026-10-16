@@ -1,6 +1,7 @@
 export const state = {
   index: { folders: [] },
   song: null,       // wpis z index.json
+  harmonization: null,
   xml: null,
   key: null,        // tonacja wzorcowa
   slotCount: 0,     // liczba nut, pod którymi stoi tekst

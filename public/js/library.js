@@ -2,7 +2,7 @@
 import { COMPACT_W } from './constants.js';
 import { $, el } from './dom.js';
 import { state } from './state.js';
-import { allSongs, countSongs, findSongs, fold, songSort } from './catalog.js';
+import { allSongs, countSongs, findSongs, fold, harmonizationCount, songSort } from './catalog.js';
 import { wake } from './focus.js';
 
 export function openDrawer(open) {
@@ -29,6 +29,11 @@ function songButton(song, path) {
   const title = document.createElement('span');
   title.className = 'song-title';
   title.textContent = song.title;
+  if ((song.harmonizations || []).length > 1) {
+    const count = document.createElement('small');
+    count.textContent = harmonizationCount(song.harmonizations.length);
+    title.append(count);
+  }
   b.append(num, title);
   if (path) {
     const small = document.createElement('small');
@@ -74,7 +79,7 @@ export function renderTree() {
     return;
   }
   const hits = [...allSongs(state.index.folders)].filter(({ song }) =>
-    fold(`${song.title} ${song.author || ''} ${song.ddn || ''}`).includes(q));
+    fold(`${song.title} ${(song.harmonizations || []).map((h) => h.author || '').join(' ')} ${song.ddn || ''}`).includes(q));
   if (!hits.length) noHits(el.tree);
   hits.forEach(({ song, path }) => el.tree.append(songButton(song, path)));
 }

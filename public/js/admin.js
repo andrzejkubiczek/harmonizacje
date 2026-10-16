@@ -1,4 +1,5 @@
 import * as Lyrics from './lyrics.js';
+import { harmonizationCount } from './catalog.js';
 
 (() => {
   'use strict';
@@ -8,11 +9,13 @@ import * as Lyrics from './lyrics.js';
     tree: $('adminTree'), form: $('songForm'), empty: $('formEmpty'), formTitle: $('formTitle'),
     folder: $('fFolder'), file: $('fFile'), fileLabel: $('fileLabel'), fileHint: $('fileHint'), drop: $('fileDrop'),
     title: $('fTitle'), author: $('fAuthor'), ddn: $('fDdn'), stanzas: $('stanzaList'),
+    harmonyControls: $('harmonyControls'), harmonySelect: $('harmonySelect'),
+    addHarmony: $('btnAddHarmony'), deleteHarmony: $('btnDeleteHarmony'),
     save: $('btnSave'), del: $('btnDelete'), toast: $('toast'), filter: $('aSearch'),
     dialog: $('dialog'), dialogTitle: $('dialogTitle'), dialogText: $('dialogText'), dialogInput: $('dialogInput'),
   };
 
-  const state = { index: { folders: [] }, editing: null, xml: null, slotCount: 0, open: new Set() };
+  const state = { index: { folders: [] }, editing: null, harmonyId: null, addingHarmony: false, xml: null, slotCount: 0, open: new Set() };
   let toastTimer = null;
 
   const ICONS = {
@@ -95,7 +98,7 @@ import * as Lyrics from './lyrics.js';
   }
 
   const fold = (s) => s.toLocaleLowerCase('pl').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ł/g, 'l');
-  const matches = (song, q) => !q || fold(`${song.title} ${song.author || ''} ${song.ddn || ''}`).includes(q);
+  const matches = (song, q) => !q || fold(`${song.title} ${(song.harmonizations || []).map((h) => h.author || '').join(' ')} ${song.ddn || ''}`).includes(q);
   const hasMatch = (folder, q) => folder.songs.some((s) => matches(s, q)) || folder.folders.some((f) => hasMatch(f, q));
 
   function songRow(song) {
@@ -107,6 +110,12 @@ import * as Lyrics from './lyrics.js';
     num.textContent = song.ddn || '';
     const title = document.createElement('span');
     title.textContent = song.title;
+    if (song.harmonizations.length > 1) {
+      const count = document.createElement('small');
+      count.className = 'harmony-count';
+      count.textContent = harmonizationCount(song.harmonizations.length);
+      title.append(' ', count);
+    }
     row.append(num, title);
     row.addEventListener('click', () => editSong(song));
     return row;
@@ -254,6 +263,8 @@ import * as Lyrics from './lyrics.js';
 
   function closeForm() {
     state.editing = null;
+    state.harmonyId = null;
+    state.addingHarmony = false;
     state.xml = null;
     el.form.hidden = true;
     el.empty.hidden = false;
@@ -274,7 +285,10 @@ import * as Lyrics from './lyrics.js';
 
   function newSong(folderId) {
     state.editing = null;
+    state.harmonyId = null;
+    state.addingHarmony = false;
     resetFields();
+    el.harmonyControls.hidden = true;
     fillFolderSelect(folderId);
     el.formTitle.textContent = 'Nowa pieśń';
     el.fileHint.textContent = '(wymagany)';
@@ -285,24 +299,79 @@ import * as Lyrics from './lyrics.js';
     renderTree();
   }
 
-  function editSong(song) {
+  function editSong(song, harmonyId) {
     state.editing = song;
+    state.addingHarmony = false;
+    state.harmonyId = song.harmonizations[0]?.id || null;
+    if (harmonyId) state.harmonyId = harmonyId;
     resetFields();
     fillFolderSelect(folderOf(song.id)?.id);
+    el.harmonyControls.hidden = false;
+    el.harmonySelect.textContent = '';
+    song.harmonizations.forEach((h, i) => {
+      const option = document.createElement('option');
+      option.value = h.id;
+      option.textContent = h.author || `Harmonizacja ${i + 1}`;
+      option.selected = h.id === state.harmonyId;
+      el.harmonySelect.append(option);
+    });
+    el.author.value = song.harmonizations.find((h) => h.id === state.harmonyId)?.author || '';
     el.formTitle.textContent = 'Edycja pieśni';
-    el.fileHint.textContent = '(opcjonalnie – zastąpi obecny)';
+    el.fileHint.textContent = '(opcjonalnie – zastąpi obecny plik)';
     el.title.value = song.title;
-    el.author.value = song.author || '';
     el.ddn.value = song.ddn || '';
     (song.stanzas || []).forEach((s) => addStanza(s));
     el.del.hidden = false;
+    el.addHarmony.hidden = false;
+    el.deleteHarmony.hidden = song.harmonizations.length <= 1;
     el.save.textContent = 'Zapisz zmiany';
     showForm();
     renderTree();
-    fetch(`data/songs/${encodeURIComponent(song.id)}.musicxml`, { cache: 'no-store' })
+    const selectedHarmonyId = state.harmonyId;
+    fetch(`data/songs/${encodeURIComponent(selectedHarmonyId)}.musicxml`, { cache: 'no-store' })
       .then((r) => (r.ok ? r.text() : ''))
-      .then((xml) => { if (state.editing === song) setSlots(xml); });
+      .then((xml) => { if (state.editing === song && state.harmonyId === selectedHarmonyId) setSlots(xml); });
   }
+
+  el.harmonySelect.addEventListener('change', () => {
+    if (state.editing && el.harmonySelect.value) editSong(state.editing, el.harmonySelect.value);
+  });
+
+  el.addHarmony.addEventListener('click', () => {
+    if (!state.editing) return;
+    state.addingHarmony = true;
+    state.harmonyId = null;
+    state.xml = null;
+    state.slotCount = 0;
+    el.harmonySelect.value = '';
+    el.harmonySelect.querySelector('option[value=""]')?.remove();
+    const option = document.createElement('option');
+    option.value = '';
+    option.textContent = 'Nowa harmonizacja';
+    option.selected = true;
+    el.harmonySelect.append(option);
+    el.author.value = '';
+    el.file.value = '';
+    el.fileLabel.textContent = 'Wybierz plik lub upuść go tutaj';
+    el.fileHint.textContent = '(wymagany dla nowej harmonizacji)';
+    el.deleteHarmony.hidden = true;
+    el.save.textContent = 'Dodaj harmonizację';
+    el.stanzas.querySelectorAll('textarea').forEach((area) => area.dispatchEvent(new Event('input')));
+  });
+
+  el.deleteHarmony.addEventListener('click', async () => {
+    const song = state.editing;
+    const harmonyId = state.harmonyId;
+    if (!song || !harmonyId || song.harmonizations.length <= 1) return;
+    const harmony = song.harmonizations.find((h) => h.id === harmonyId);
+    const name = harmony?.author || 'wybrana harmonizacja';
+    if (!(await ask({ title: 'Usunąć harmonizację?', text: `„${name}” zostanie trwale usunięta.`, ok: 'Usuń' }))) return;
+    run(async () => {
+      await api('DELETE', `songs/${song.id}/harmonizations/${harmonyId}`);
+      await reload();
+      editSong(findSong(song.id));
+    }, 'Harmonizacja usunięta.');
+  });
 
   function setSlots(xml) {
     const doc = new DOMParser().parseFromString(xml, 'application/xml');
@@ -390,7 +459,8 @@ import * as Lyrics from './lyrics.js';
   el.form.addEventListener('submit', (e) => {
     e.preventDefault();
     const editing = state.editing;
-    if (!editing && !state.xml) { toast('Wybierz plik MusicXML.', true); return; }
+    const addingHarmony = state.addingHarmony;
+    if ((!editing || addingHarmony) && !state.xml) { toast('Wybierz plik MusicXML.', true); return; }
     const body = {
       folderId: el.folder.value,
       title: el.title.value,
@@ -399,12 +469,17 @@ import * as Lyrics from './lyrics.js';
       stanzas: [...el.stanzas.querySelectorAll('textarea')].map((t) => t.value),
       xml: state.xml || undefined,
     };
+    if (editing) {
+      body.harmonyId = state.harmonyId;
+      body.addHarmony = addingHarmony;
+    }
     run(async () => {
       const saved = editing ? await api('PUT', `songs/${editing.id}`, body) : await api('POST', 'songs', body);
       state.open.add(body.folderId);
       await reload();
-      editSong(findSong(saved.id));
-    }, editing ? 'Zapisano zmiany.' : 'Pieśń dodana.');
+      if (addingHarmony) editSong(findSong(saved.song.id), saved.harmonization.id);
+      else editSong(findSong(saved.id), editing ? body.harmonyId : saved.harmonizations[0].id);
+    }, addingHarmony ? 'Harmonizacja dodana.' : editing ? 'Zapisano zmiany.' : 'Pieśń dodana.');
   });
 
   el.del.addEventListener('click', async () => {

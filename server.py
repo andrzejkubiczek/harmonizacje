@@ -78,10 +78,10 @@ def find_song(folders, song_id):
     return None
 
 
-def collect_song_ids(folder):
-    ids = [s["id"] for s in folder["songs"]]
+def collect_harmonization_ids(folder):
+    ids = [h["id"] for s in folder["songs"] for h in s["harmonizations"]]
     for sub in folder["folders"]:
-        ids += collect_song_ids(sub)
+        ids += collect_harmonization_ids(sub)
     return ids
 
 
@@ -169,8 +169,8 @@ def handle_api(method, parts, body):
                 save_index(index)
                 return 200, folder
             if method == "DELETE":
-                for song_id in collect_song_ids(folder):
-                    (SONGS / f"{song_id}.musicxml").unlink(missing_ok=True)
+                for harmony_id in collect_harmonization_ids(folder):
+                    (SONGS / f"{harmony_id}.musicxml").unlink(missing_ok=True)
                 siblings.pop(i)
                 save_index(index)
                 return 200, {"ok": True}
@@ -181,8 +181,19 @@ def handle_api(method, parts, body):
                 raise ApiError(404, "Nie ma takiego folderu.")
             fields = clean_song_fields(body)
             validate_xml(body.get("xml"))
-            song = {"id": new_id(fields["title"]), **fields, "rev": int(time.time())}
-            write_song_file(song["id"], body["xml"])
+            song_id = new_id(fields["title"])
+            song = {
+                "id": song_id,
+                "title": fields["title"],
+                "ddn": fields["ddn"],
+                "stanzas": fields["stanzas"],
+                "harmonizations": [{
+                    "id": song_id,
+                    "author": fields["author"],
+                    "rev": int(time.time()),
+                }],
+            }
+            write_song_file(song_id, body["xml"])
             found[0]["songs"].append(song)
             save_index(index)
             return 201, song
@@ -195,23 +206,72 @@ def handle_api(method, parts, body):
                 raise ApiError(404, "Nie ma takiej pieśni.")
             song, siblings, i = found
             if method == "PUT":
-                song.update(clean_song_fields(body))
-                song["rev"] = int(time.time())
-                if body.get("xml"):
-                    validate_xml(body["xml"])
-                    write_song_file(song["id"], body["xml"])
+                fields = clean_song_fields(body)
+                dest = None
                 if body.get("folderId"):
                     dest = find_folder(folders, body["folderId"])
                     if not dest:
                         raise ApiError(404, "Nie ma takiego folderu.")
-                    if dest[0]["songs"] is not siblings:
-                        siblings.pop(i)
-                        dest[0]["songs"].append(song)
+                if body.get("addHarmony"):
+                    validate_xml(body.get("xml"))
+                    harmony_id = new_id(fields["title"])
+                    harmony = {
+                        "id": harmony_id,
+                        "author": clean_text(body.get("author"), 300),
+                        "rev": int(time.time()),
+                    }
+                else:
+                    harmony = next(
+                        (h for h in song["harmonizations"] if h["id"] == body.get("harmonyId")),
+                        None,
+                    )
+                    if not harmony:
+                        raise ApiError(404, "Nie ma takiej harmonizacji.")
+                    if body.get("xml"):
+                        validate_xml(body["xml"])
+
+                song.update({
+                    "title": fields["title"],
+                    "ddn": fields["ddn"],
+                    "stanzas": fields["stanzas"],
+                })
+                if body.get("addHarmony"):
+                    write_song_file(harmony["id"], body["xml"])
+                    song["harmonizations"].append(harmony)
+                else:
+                    harmony["author"] = clean_text(body.get("author"), 300)
+                    harmony["rev"] = int(time.time())
+                    if body.get("xml"):
+                        write_song_file(harmony["id"], body["xml"])
+                if dest and dest[0]["songs"] is not siblings:
+                    siblings.pop(i)
+                    dest[0]["songs"].append(song)
                 save_index(index)
+                if body.get("addHarmony"):
+                    return 200, {"song": song, "harmonization": harmony}
                 return 200, song
             if method == "DELETE":
                 siblings.pop(i)
-                (SONGS / f"{song['id']}.musicxml").unlink(missing_ok=True)
+                for harmony in song["harmonizations"]:
+                    (SONGS / f"{harmony['id']}.musicxml").unlink(missing_ok=True)
+                save_index(index)
+                return 200, {"ok": True}
+
+        if len(parts) == 4 and parts[0] == "songs" and parts[2] == "harmonizations":
+            if not ID_RE.match(parts[1]) or not ID_RE.match(parts[3]):
+                raise ApiError(400, "Nieprawidłowy identyfikator.")
+            found = find_song(folders, parts[1])
+            if not found:
+                raise ApiError(404, "Nie ma takiej pieśni.")
+            song = found[0]
+            harmonization = next((h for h in song["harmonizations"] if h["id"] == parts[3]), None)
+            if not harmonization:
+                raise ApiError(404, "Nie ma takiej harmonizacji.")
+            if method == "DELETE":
+                if len(song["harmonizations"]) <= 1:
+                    raise ApiError(400, "Pieśń musi mieć co najmniej jedną harmonizację.")
+                song["harmonizations"].remove(harmonization)
+                (SONGS / f"{harmonization['id']}.musicxml").unlink(missing_ok=True)
                 save_index(index)
                 return 200, {"ok": True}
 

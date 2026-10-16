@@ -22,31 +22,41 @@ function readKey(doc) {
 
 function showEmpty(message) {
   state.song = null;
+  state.harmonization = null;
+  el.harmonyGroup.hidden = true;
   el.wrap.hidden = true;
   el.empty.hidden = false;
   if (message) el.empty.querySelector('.empty-title').textContent = message;
   updateControls();
 }
 
-async function openSong(id) {
+let routeToken = 0;
+
+async function openSong(id, harmonyId, token) {
   const path = findPath(state.index.folders, id);
   if (!path) { showEmpty(); return; }
   const song = path[path.length - 1].songs.find((s) => s.id === id);
+  const harmonizations = song.harmonizations || [];
+  const harmonization = harmonizations.find((h) => h.id === harmonyId) || harmonizations[0];
+  if (!harmonization) { showEmpty('Ta pieśń nie ma harmonizacji.'); return; }
   el.loading.hidden = false;
   let xml;
   try {
-    const res = await fetch(Offline.songUrl(song));
+    const res = await fetch(Offline.songUrl(harmonization));
     if (!res.ok) throw new Error(res.status);
     xml = await res.text();
   } catch {
+    if (token !== routeToken) return;
     el.loading.hidden = true;
     showEmpty('Nie udało się wczytać pieśni.');
     return;
   }
+  if (token !== routeToken) return;
   el.loading.hidden = true;
 
   const doc = parseXml(xml);
   state.song = song;
+  state.harmonization = harmonization;
   state.xml = xml;
   state.key = readKey(doc);
   state.slotCount = Lyrics.getSlots(doc).length;
@@ -55,6 +65,15 @@ async function openSong(id) {
   resetCaches();
 
   el.crumb.textContent = path.map((f) => f.name).join(' › ');
+  el.harmonyGroup.hidden = harmonizations.length < 2;
+  el.harmonySelect.textContent = '';
+  harmonizations.forEach((item, i) => {
+    const option = document.createElement('option');
+    option.value = item.id;
+    option.textContent = item.author || `Harmonizacja ${i + 1}`;
+    option.selected = item.id === harmonization.id;
+    el.harmonySelect.append(option);
+  });
   el.empty.hidden = true;
   el.wrap.hidden = false;
   document.title = `${song.title} – Harmonizacje`;
@@ -64,6 +83,7 @@ async function openSong(id) {
 }
 
 export function route() {
-  const m = /^#song=([a-z0-9-]+)$/.exec(location.hash);
-  if (m) openSong(m[1]); else showEmpty();
+  const token = ++routeToken;
+  const m = /^#song=([a-z0-9-]+)(?:&harmony=([a-z0-9-]+))?$/.exec(location.hash);
+  if (m) openSong(m[1], m[2], token); else showEmpty();
 }

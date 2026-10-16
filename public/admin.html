@@ -47,6 +47,16 @@
 
         <div class="form-section">
           <h3><span class="step">1</span>Plik i folder</h3>
+          <div id="harmonyControls" hidden>
+            <label class="field">
+              <span>Harmonizacja</span>
+              <select id="harmonySelect"></select>
+            </label>
+            <div class="harmony-actions">
+              <button class="btn ghost" id="btnAddHarmony" type="button">Dodaj harmonizację</button>
+              <button class="btn danger" id="btnDeleteHarmony" type="button" hidden>Usuń harmonizację</button>
+            </div>
+          </div>
           <div class="field">
             <span>Plik MusicXML <em id="fileHint"></em></span>
             <label class="file" id="fileDrop">
@@ -69,7 +79,7 @@
           </label>
           <div class="row">
             <label class="field grow">
-              <span>Autor opracowania</span>
+              <span>Autor harmonizacji</span>
               <input type="text" id="fAuthor" maxlength="300">
             </label>
             <label class="field num">
